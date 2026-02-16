@@ -696,3 +696,15 @@ body {
         font-size: 1.5em;
     }
 }
+.logo-small {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    filter: drop-shadow(0 0 15px rgba(94, 179, 230, 0.4));
+    transition: transform 0.3s ease;
+    object-fit: contain;
+}
+
+.logo-small:hover {
+    transform: scale(1.05);
+}

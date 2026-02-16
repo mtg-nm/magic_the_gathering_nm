@@ -17,8 +17,13 @@ export default async function Home() {
         <header className="header">
           <div className="container">
             <div className="header-content">
-              <div className="header-left">
-                <div className="header-title">
+              <div className="header-left" style={{ display: 'flex', alignItems: 'center' }}>
+                <img 
+                  src="/logomtgnm.png" 
+                  alt="NM Magic 2026 Logo" 
+                  className="logo-small"
+                />
+                <div className="header-title" style={{ marginLeft: '15px' }}>
                   <h1>NM Magic 2026</h1>
                   <p>Norgesmesterskapet i Magic: The Gathering</p>
                 </div>
@@ -54,7 +59,7 @@ export default async function Home() {
                   ⚔️ Norgesmesterskapet i Magic: The Gathering
                 </h1>
                 <p style={{ fontSize: '1.2em', color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto 40px' }}>
-                  Norges største Magic-turnering 7-9 august 2026. Slåss om tittelen som Norgesmester!
+                  Norges største Magic-turnering 7-9 august 2026
                 </p>
                 <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
                   <a href="/fullt-program" className="btn btn-primary">📅 Alle Events</a>
@@ -86,8 +91,8 @@ export default async function Home() {
                       <p style={{ color: 'var(--text-muted)' }}>Modern + Draft</p>
                     </div>
                     <div>
-                      <h4 style={{ color: '#7bc4f0', marginBottom: '8px' }}>👥 Deltakere</h4>
-                      <p style={{ color: 'var(--text-muted)' }}>Opp til 128</p>
+                      <h4 style={{ color: '#7bc4f0', marginBottom: '8px' }}>👥 Maks Antall Deltakere</h4>
+                      <p style={{ color: 'var(--text-muted)' }}>128</p>
                     </div>
                     <div>
                       <h4 style={{ color: '#7bc4f0', marginBottom: '8px' }}>💰 Påmeldingspris</h4>
@@ -130,7 +135,7 @@ export default async function Home() {
                     <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Draft + Modern</p>
                   </div>
                   <div>
-                    <p style={{ margin: '0', color: '#9effc0', fontWeight: '600', fontSize: '0.9em' }}>👥 DELTAKERE</p>
+                    <p style={{ margin: '0', color: '#9effc0', fontWeight: '600', fontSize: '0.9em' }}>👥 MAKS DELTAKERE</p>
                     <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>128</p>
                   </div>
                 </div>
@@ -167,7 +172,7 @@ export default async function Home() {
                     Pilestredet 52, 0169 Oslo
                   </p>
                   <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    ~10 min fra Oslo Slott
+                    ~15 min fra Nationaltheatret
                   </p>
                 </div>
 
@@ -175,13 +180,13 @@ export default async function Home() {
                 <div className="content-box-green">
                   <h3 style={{ color: '#9effc0', marginBottom: '15px' }}>🚗 Transport</h3>
                   <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>T-banen:</strong> Hausmanns gate (5 min gange)
+                    <strong>Trikk:</strong> Linje 17/18 til Welhavens gate (1 min gange)
                   </p>
                   <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>Buss:</strong> Linjer 20, 21, 32
+                    <strong>Buss:</strong> Linje 37 til Holbergsplass (6 min gange)
                   </p>
                   <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>Parkering:</strong> Tilgjengelig på området
+                    <strong>Parkering:</strong> Gateparkering / Frydenlund P-Hus (4 min gange)
                   </p>
                 </div>
 
@@ -303,6 +308,7 @@ export default async function Home() {
             <div className="footer-content">
               <div className="footer-brand">NM Magic 2026</div>
               <div>Pilestredet 52 - Studenthuset, OsloMet • 7-9 august 2026</div>
+              <div>Made by Mathias Nilsen</div>
             </div>
           </div>
         </footer>
