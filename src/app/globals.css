@@ -213,11 +213,11 @@ body {
     margin: 0 auto;
 }
 
-/* ===== CARDS - MED FARGER OG HOVER ===== */
+/* ===== CARDS - ENHETLIG STYLING ===== */
 
 .card {
     background: var(--box-primary);
-    border: 3px solid var(--primary-color);
+    border: 2px solid var(--primary-color);
     border-radius: 12px;
     padding: 30px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -560,6 +560,53 @@ body {
     font-size: 0.95em;
 }
 
+/* ===== DAY SECTION ===== */
+
+.day-section {
+    margin-bottom: 80px;
+}
+
+.day-title {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: var(--primary-light);
+    margin-bottom: 40px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+}
+
+/* ===== EVENT SPECS ===== */
+
+.event-specs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+    padding: 20px 0;
+    border-top: 1px solid rgba(94, 179, 230, 0.2);
+    border-bottom: 1px solid rgba(94, 179, 230, 0.2);
+}
+
+.spec {
+    display: flex;
+    flex-direction: column;
+}
+
+.spec-label {
+    font-size: 0.85em;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.spec-value {
+    font-size: 1.1em;
+    color: var(--primary-light);
+    font-weight: 600;
+}
+
 /* ===== RESPONSIVE ===== */
 
 @media (max-width: 768px) {
@@ -603,6 +650,14 @@ body {
     }
 
     .info-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .day-title {
+        font-size: 1.4em;
+    }
+
+    .event-specs {
         grid-template-columns: 1fr;
     }
 }

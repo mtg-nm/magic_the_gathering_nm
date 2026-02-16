@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 
 export default async function DynamicPage({ params }: { params: Promise<{ slug: string }> }) {
   try {
-    // AWAIT params først!
     const { slug } = await params;
 
     const pages = await getPages();
@@ -11,46 +10,58 @@ export default async function DynamicPage({ params }: { params: Promise<{ slug: 
     const events = await getEvents();
     const byeTournamentInfo = await getByeTournamentInfo();
 
-    // Normalize slug for case-insensitive matching
     const normalizedSlug = slug.toLowerCase().trim();
 
-    console.log("📍 Looking for slug:", normalizedSlug);
-    console.log("🔍 Available pages:", pages.map((p: any) => ({
-      title: p.fields?.title,
-      slug: p.fields?.slug
-    })));
-    console.log("🔍 DEBUG events:", events.length, "events loaded");
-    console.log("🔍 DEBUG normalizedSlug:", normalizedSlug);
-    console.log("🔍 DEBUG should show events:", normalizedSlug === 'fullt-program' && Array.isArray(events) && events.length > 0);
-
-    // Finn siden basert på slug (case-insensitive)
     const page = pages.find((p: any) => 
       p.fields?.slug?.toLowerCase().trim() === normalizedSlug
     ) as any;
 
-    console.log("📦 Found page:", page ? page?.fields?.title : "NOT FOUND");
-
     if (!page) {
-      console.log("❌ No page found for slug:", normalizedSlug);
       notFound();
     }
 
-    // DEBUG: Log byeTournamentInfo data
-    console.log("🔍 byeTournamentInfo data:", byeTournamentInfo.map((item: any) => ({
-      id: item.sys.id,
-      title: item.fields?.title,
-      allFields: Object.keys(item.fields || {})
-    })));
+    const groupEventsByDay = (eventList: any[]) => {
+      const dayMap: { [key: string]: { name: string; date: string } } = {
+        'day one': { name: 'Fredag', date: '7. august' },
+        'day two': { name: 'Lørdag', date: '8. august' },
+        'day three': { name: 'Søndag', date: '9. august' }
+      };
+
+      const grouped: { [key: string]: any[] } = {
+        'Fredag': [],
+        'Lørdag': [],
+        'Søndag': []
+      };
+
+      eventList.forEach((event: any) => {
+        const dayKey = event.fields?.day?.toLowerCase().trim() || '';
+        const dayInfo = dayMap[dayKey];
+        const dayName = dayInfo?.name || 'Annen';
+
+        if (grouped[dayName]) {
+          grouped[dayName].push(event);
+        }
+      });
+
+      return grouped;
+    };
+
+    const eventsByDay = groupEventsByDay(events);
+
+    const dayDates: { [key: string]: string } = {
+      'Fredag': '7. august',
+      'Lørdag': '8. august',
+      'Søndag': '9. august'
+    };
 
     return (
       <>
-        {/* HEADER & NAVIGATION */}
         <header className="header">
           <div className="container">
             <div className="header-content">
               <div className="header-left">
                 <div className="header-title">
-                  <h1>NM Magic 2025</h1>
+                  <h1>NM Magic 2026</h1>
                   <p>Norgesmesterskapet i Magic: The Gathering</p>
                 </div>
               </div>
@@ -76,9 +87,7 @@ export default async function DynamicPage({ params }: { params: Promise<{ slug: 
           </div>
         </header>
 
-        {/* MAIN CONTENT */}
         <main className="main-content">
-          {/* HERO SECTION - IKKE VIS PÅ FULLT-PROGRAM OG BYE-TURNERINGER */}
           {page?.fields?.heroSection && normalizedSlug !== 'fullt-program' && normalizedSlug !== 'bye-turneringer' && (
             <section className="page-section">
               <div className="container">
@@ -127,7 +136,6 @@ export default async function DynamicPage({ params }: { params: Promise<{ slug: 
             </section>
           )}
 
-          {/* PAGE DESCRIPTION - IKKE VIS PÅ FULLT-PROGRAM OG BYE-TURNERINGER */}
           {page?.fields?.description && normalizedSlug !== 'fullt-program' && normalizedSlug !== 'bye-turneringer' && (
             <section className="page-section">
               <div className="container">
@@ -144,7 +152,6 @@ export default async function DynamicPage({ params }: { params: Promise<{ slug: 
             </section>
           )}
 
-          {/* PAGE CONTENT */}
           {page?.fields?.content && (
             <section className="page-section">
               <div className="container">
@@ -161,138 +168,200 @@ export default async function DynamicPage({ params }: { params: Promise<{ slug: 
             </section>
           )}
 
-          {/* EVENTS SECTION - VIS PÅ FULLT-PROGRAM */}
+          {(page?.fields?.rulesv2 || page?.fields?.deltakere) && normalizedSlug !== 'fullt-program' && normalizedSlug !== 'bye-turneringer' && (
+            <section className="page-section">
+              <div className="container">
+                <div className="event-specs">
+                  {page?.fields?.rulesv2 && (
+                    <div className="spec">
+                      <div className="spec-label">Regler</div>
+                      <div className="spec-value">{String(page?.fields?.rulesv2)}</div>
+                    </div>
+                  )}
+                  {page?.fields?.deltakere && (
+                    <div className="spec">
+                      <div className="spec-label">Deltakere</div>
+                      <div className="spec-value">{String(page?.fields?.deltakere)}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+
           {normalizedSlug === 'fullt-program' && Array.isArray(events) && events.length > 0 && (
             <section className="page-section">
               <div className="container">
-                {/* HEADER MED LITEN BOKS */}
-                <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                  <h2 style={{ 
-                    fontSize: '2.5em', 
-                    fontWeight: '700', 
-                    color: 'var(--text-light)', 
-                    marginBottom: '20px' 
-                  }}>
-                    📅 Fullt Program
-                  </h2>
-                  <div style={{
-                    display: 'inline-block',
-                    backgroundColor: 'var(--box-primary)',
-                    border: '1px solid #7bc4f0',
-                    borderRadius: '8px',
-                    padding: '12px 24px',
-                    color: 'var(--text-muted)',
-                    fontSize: '1em'
-                  }}>
-                    Alt som skjer under Norgesmesterskapet
-                  </div>
+                <div className="section-header">
+                  <h2>Fullt Program</h2>
+                  <p>Alt som skjer under Norgesmesterskapet</p>
                 </div>
 
-                {/* EVENTS GRID */}
-                <div className="grid-2">
-                  {events.map((event: any) => (
-                    <div
-                      key={event.sys.id}
-                      className="content-box-blue"
-                    >
-                      <h3 style={{ color: '#7bc4f0', marginBottom: '12px' }}>
-                        {String(event.fields?.title || 'Unavngitt arrangement')}
-                      </h3>
-                      {event.fields?.day && (
-                        <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}>
-                          <strong>📆 Dag:</strong> {String(event.fields.day)}
-                        </p>
-                      )}
-                      {event.fields?.startTime && (
-                        <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}>
-                          <strong>🕐 Tid:</strong> {String(event.fields.startTime)}
-                        </p>
-                      )}
-                      {event.fields?.format && (
-                        <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}>
-                          <strong>📋 Format:</strong> {String(event.fields.format)}
-                        </p>
-                      )}
-                      {event.fields?.entryFee && (
-                        <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}>
-                          <strong>💰 Pris:</strong> {String(event.fields.entryFee)} kr
-                        </p>
-                      )}
-                      {event.fields?.description && typeof event.fields.description === 'string' && (
-                        <p style={{ margin: '12px 0 0 0', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-                          {event.fields.description}
-                        </p>
-                      )}
+                {Object.entries(eventsByDay).map(([day, dayEvents]: [string, any[]]) => (
+                  dayEvents.length > 0 && (
+                    <div key={day} className="day-section">
+                      <h3 className="day-title">🗓️ {day} {dayDates[day]}</h3>
+
+                      <div className="grid-2">
+                        {dayEvents.map((event: any) => {
+                          const signupUrl = event.fields?.url ? String(event.fields.url) : null;
+                          const schedule = event.fields?.schedule ? String(event.fields.schedule) : null;
+                          const deltakere = event.fields?.deltakere ? String(event.fields.deltakere) : null;
+                          const rulesv2 = event.fields?.rulesv2 ? String(event.fields.rulesv2) : null;
+
+                          return (
+                            <div 
+                              key={event.sys.id} 
+                              className="card"
+                            >
+                              <h3 className="card-title">
+                                {String(event.fields?.title || 'Unavngitt arrangement')}
+                              </h3>
+
+                              {event.fields?.description && typeof event.fields.description === 'string' && (
+                                <p className="card-description">
+                                  {event.fields.description}
+                                </p>
+                              )}
+
+                              {schedule && (
+                                <div className="event-schedule" style={{ 
+                                  backgroundColor: 'rgba(123, 196, 240, 0.1)',
+                                  padding: '12px',
+                                  borderRadius: '6px',
+                                  marginBottom: '15px',
+                                  borderLeft: '3px solid #7bc4f0',
+                                  color: 'var(--text-muted)',
+                                  fontSize: '0.95em',
+                                  lineHeight: '1.5'
+                                }}>
+                                  {schedule}
+                                </div>
+                              )}
+
+                              <div className="event-specs">
+                                {event.fields?.startTime && (
+                                  <div className="spec">
+                                    <div className="spec-label">Tid</div>
+                                    <div className="spec-value">{String(event.fields.startTime)}</div>
+                                  </div>
+                                )}
+                                {event.fields?.entryFee && (
+                                  <div className="spec">
+                                    <div className="spec-label">Pris</div>
+                                    <div className="spec-value">{String(event.fields.entryFee)} kr</div>
+                                  </div>
+                                )}
+                                {event.fields?.maxParticipants && (
+                                  <div className="spec">
+                                    <div className="spec-label">Max deltakere</div>
+                                    <div className="spec-value">{String(event.fields.maxParticipants)}</div>
+                                  </div>
+                                )}
+                                {deltakere && (
+                                  <div className="spec">
+                                    <div className="spec-label">Deltakere</div>
+                                    <div className="spec-value">{deltakere}</div>
+                                  </div>
+                                )}
+                                {event.fields?.format && (
+                                  <div className="spec">
+                                    <div className="spec-label">Format</div>
+                                    <div className="spec-value">{String(event.fields.format)}</div>
+                                  </div>
+                                )}
+                                {rulesv2 && (
+                                  <div className="spec">
+                                    <div className="spec-label">Regler</div>
+                                    <div className="spec-value">{rulesv2}</div>
+                                  </div>
+                                )}
+                              </div>
+
+                              {signupUrl && (
+                                <a 
+                                  href={signupUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="btn btn-primary"
+                                  style={{ width: '100%', textAlign: 'center', marginTop: '20px', display: 'block' }}
+                                >
+                                  Påmelding
+                                </a>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  )
+                ))}
               </div>
             </section>
           )}
 
-          {/* BYE TOURNAMENT INFO SECTION - VIS PÅ BYE-TURNERINGE */}
           {normalizedSlug === 'bye-turneringer' && Array.isArray(byeTournamentInfo) && byeTournamentInfo.length > 0 && (
             <section className="page-section">
               <div className="container">
-                {/* HEADER MED LITEN BOKS */}
-                <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                  <h2 style={{ 
-                    fontSize: '2.5em', 
-                    fontWeight: '700', 
-                    color: 'var(--text-light)', 
-                    marginBottom: '20px' 
-                  }}>
-                    🏆 Bye-turneringer
-                  </h2>
-                  <div style={{
-                    display: 'inline-block',
-                    backgroundColor: 'var(--box-primary)',
-                    border: '1px solid #7bc4f0',
-                    borderRadius: '8px',
-                    padding: '12px 24px',
-                    color: 'var(--text-muted)',
-                    fontSize: '1em'
-                  }}>
-                    Siste sjanse til å vinne bye til Norgesmesterskapet
-                  </div>
+                <div className="section-header">
+                  <h2>Bye-turneringer</h2>
+                  <p>Siste sjanse til å vinne bye til Norgesmesterskapet</p>
                 </div>
 
-                {/* BYE TOURNAMENTS GRID */}
                 <div className="grid-2">
-                  {byeTournamentInfo.map((item: any) => (
-                    <div
-                      key={item.sys.id}
-                      className="content-box-blue"
-                    >
-                      <h3 style={{ color: '#7bc4f0', marginBottom: '12px' }}>
-                        {String(item.fields?.title || 'Unavngitt turnering')}
-                      </h3>
-                      {item.fields?.description && (
-                        <p style={{ margin: '12px 0', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-                          {String(item.fields.description)}
-                        </p>
-                      )}
-                      {item.fields?.format && (
-                        <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}>
-                          <strong>Format:</strong> {String(item.fields.format)}
-                        </p>
-                      )}
-                      {item.fields?.rounds && (
-                        <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}>
-                          <strong>Runder:</strong> {String(item.fields.rounds)}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                  {byeTournamentInfo.map((item: any) => {
+                    const deltakere = item.fields?.deltakere ? String(item.fields.deltakere) : null;
+                    const rulesv2 = item.fields?.rulesv2 ? String(item.fields.rulesv2) : null;
+
+                    return (
+                      <div key={item.sys.id} className="card">
+                        <h3 className="card-title">
+                          {String(item.fields?.title || 'Unavngitt turnering')}
+                        </h3>
+                        {item.fields?.description && (
+                          <p className="card-description">
+                            {String(item.fields.description)}
+                          </p>
+                        )}
+                        <div className="event-specs">
+                          {item.fields?.format && (
+                            <div className="spec">
+                              <div className="spec-label">Format</div>
+                              <div className="spec-value">{String(item.fields.format)}</div>
+                            </div>
+                          )}
+                          {item.fields?.rounds && (
+                            <div className="spec">
+                              <div className="spec-label">Runder</div>
+                              <div className="spec-value">{String(item.fields.rounds)}</div>
+                            </div>
+                          )}
+                          {deltakere && (
+                            <div className="spec">
+                              <div className="spec-label">Deltakere</div>
+                              <div className="spec-value">{deltakere}</div>
+                            </div>
+                          )}
+                          {rulesv2 && (
+                            <div className="spec">
+                              <div className="spec-label">Regler</div>
+                              <div className="spec-value">{rulesv2}</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </section>
           )}
 
-          {/* HVIS INGEN INNHOLD */}
           {!page?.fields?.heroSection && 
             !page?.fields?.description && 
             !page?.fields?.content && 
+            !page?.fields?.rulesv2 &&
+            !page?.fields?.deltakere &&
             !(normalizedSlug === 'fullt-program' && Array.isArray(events) && events.length > 0) &&
             !(normalizedSlug === 'bye-turneringer' && Array.isArray(byeTournamentInfo) && byeTournamentInfo.length > 0) && (
             <section className="page-section">
@@ -311,12 +380,11 @@ export default async function DynamicPage({ params }: { params: Promise<{ slug: 
           )}
         </main>
 
-        {/* FOOTER */}
         <footer className="footer">
           <div className="container">
             <div className="footer-content">
-              <div className="footer-brand">NM Magic 2025</div>
-              <div>Pilestredet 52 - Studenthuset, OsloMet • 7-9 august 2025</div>
+              <div className="footer-brand">NM Magic 2026</div>
+              <div>Pilestredet 52 - Studenthuset, OsloMet • 7-9 august 2026</div>
             </div>
           </div>
         </footer>
