@@ -1,4 +1,4 @@
-import { getPages, getNavigation, getEvents, getVendors, getLocation } from '@/lib/contentful';
+import { getPages, getNavigation, getEvents, getVendors, getLocation, getPracticalInfoItems } from '@/lib/contentful';
 
 export default async function Home() {
   try {
@@ -7,6 +7,7 @@ export default async function Home() {
     const events = await getEvents();
     const vendors = await getVendors();
     const location = await getLocation();
+    const practicalInfoItems = await getPracticalInfoItems();
 
     // Finn hovedturneringen (featured event)
     const mainEvent = events.find((e: any) => e.fields?.title?.includes('Norgesmesterskapet') && e.fields?.day?.includes('8'));
@@ -154,69 +155,31 @@ export default async function Home() {
           </section>
 
           {/* PRAKTISK INFORMASJON BOLK */}
-          <section className="page-section">
-            <div className="container">
-              <div className="section-header">
-                <h2>🏠 Praktisk Informasjon</h2>
-                <p>Reise, overnatting, mat og andre praktiske detaljer for turneringshelgen</p>
-              </div>
-
-              <div className="grid-2">
-                {/* LOKASJON & ADRESSE */}
-                <div className="content-box-green">
-                  <h3 style={{ color: '#9effc0', marginBottom: '15px' }}>📍 Lokasjon & Adresse</h3>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>Studenthuset, OsloMet</strong>
-                  </p>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    Pilestredet 52, 0169 Oslo
-                  </p>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    ~15 min fra Nationaltheatret
-                  </p>
+          {Array.isArray(practicalInfoItems) && practicalInfoItems.length > 0 && (
+            <section className="page-section">
+              <div className="container">
+                <div className="section-header">
+                  <h2>🏠 Praktisk Informasjon</h2>
+                  <p>Reise, overnatting, mat og andre praktiske detaljer for turneringshelgen</p>
                 </div>
 
-                {/* TRANSPORT TIL LOKASJON */}
-                <div className="content-box-green">
-                  <h3 style={{ color: '#9effc0', marginBottom: '15px' }}>🚗 Transport</h3>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>Trikk:</strong> Linje 17/18 til Welhavens gate (1 min gange)
-                  </p>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>Buss:</strong> Linje 37 til Holbergsplass (6 min gange)
-                  </p>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>Parkering:</strong> Gateparkering / Frydenlund P-Hus (4 min gange)
-                  </p>
-                </div>
-
-                {/* OVERNATTING */}
-                <div className="content-box-green">
-                  <h3 style={{ color: '#9effc0', marginBottom: '15px' }}>🏨 Overnatting</h3>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>Hostel:</strong> Budsjettpriser i sentrum
-                  </p>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>Hotell:</strong> 3-5 stjerner rundt Slottet
-                  </p>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    <strong>Airbnb:</strong> Leiligheter å leie
-                  </p>
-                </div>
-
-                {/* MAT & DRIKKE */}
-                <div className="content-box-green">
-                  <h3 style={{ color: '#9effc0', marginBottom: '15px' }}>🍽️ Mat & Drikke</h3>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    Coop Mega rett over veien
-                  </p>
-                  <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
-                    Mange kafeer og restauranter i nærheten
-                  </p>
+                <div className="grid-2">
+                  {practicalInfoItems.map((item: any) => (
+                    <div key={item.sys.id} className="content-box-green">
+                      <h3 style={{ color: '#9effc0', marginBottom: '15px' }}>
+                        {item.fields?.icon} {String(item.fields?.title || 'Praktisk Info')}
+                      </h3>
+                      {item.fields?.description && typeof item.fields.description === 'string' && (
+                        <p style={{ margin: '8px 0', color: 'var(--text-muted)', fontSize: '0.95em', lineHeight: '1.6' }}>
+                          {item.fields.description}
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
 
           {/* VENDORS & HANDLESTEDIER BOLK */}
           {Array.isArray(vendors) && vendors.length > 0 && (
