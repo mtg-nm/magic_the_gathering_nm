@@ -16,8 +16,8 @@ export default async function ByeTournamentPage() {
     // Sorter events etter dato
     const sortedByeEvemts = Array.isArray(byeEvemts)
       ? [...byeEvemts].sort((a, b) => {
-          const dateA = new Date(a.fields?.eventStartTime || 0).getTime();
-          const dateB = new Date(b.fields?.eventStartTime || 0).getTime();
+          const dateA = new Date(String(a.fields?.eventStartTime) || '0').getTime();
+          const dateB = new Date(String(b.fields?.eventStartTime) || '0').getTime();
           return dateA - dateB;
         })
       : [];
