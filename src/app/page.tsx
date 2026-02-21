@@ -105,7 +105,7 @@ export default async function Home() {
           <section className="page-section" id="velkommen-nm">
             <div className="container">
               <div className="section-header">
-                <h2>Velkommen til NM i magic 2026</h2>
+                <h1>Velkommen til Norges største Magic-turnering</h1>
                   <p style={{ fontSize: '1.2em', color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto 40px' }}>
                   Blir du vår neste Norgesmester?
                 </p>
@@ -114,11 +114,9 @@ export default async function Home() {
               {/* NORGESMESTERSKAPET - HOVEDEVENT */}
               <div className="content-box-blue" style={{ marginTop: '30px', marginBottom: '40px' }}>
                 <h3 style={{ color: '#7bc4f0', marginBottom: '15px', fontSize: '1.3em' }}>
-                  🎯 Norgesmesterskapet - Magic: The Gathering
+                  🎯 Konkurrer om å bli Norgesmester i 2026
                 </h3>
-                <p style={{ margin: '0', color: 'var(--text-muted)', marginBottom: '20px', lineHeight: '1.8', fontSize: '1.05em' }}>
-                  Lørdag 8. august 09:00. Slåss om tittelen som Norgesmester 2026. Draft + Modern. 128 deltakere, 3 Runder Draft → Swiss → Top 8.
-                </p>
+
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px', marginBottom: '20px' }}>
                   <div>
@@ -331,7 +329,7 @@ export default async function Home() {
                 <p style={{ margin: '10px 0', color: 'var(--text-muted)', fontSize: '0.95em' }}>
                   Kontakt oss på Discord • E-post: <strong>mtgnm.styret@gmail.com</strong>
                 </p>
-                <a href="#" className="btn btn-primary" style={{ marginTop: '15px' }}>
+                <a href="https://discord.com/invite/7UtayJsGBB" target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ marginTop: '15px' }}>
                   🎮 Join Discord
                 </a>
               </div>

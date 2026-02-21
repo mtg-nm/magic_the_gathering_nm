@@ -200,13 +200,12 @@ export async function getByeTournamentInfoSection() {
   try {
     const entries = await client.getEntries({
       content_type: 'byeTornamentInfoSection',
-      limit: 1,
     });
-    console.log("✅ getByeTournamentInfoSection() returnerer:", entries.items.length, "bye tournament info section");
-    return entries.items[0];
+    console.log("✅ getByeTournamentInfoSection() returnerer:", entries.items.length, "bye tournament info sections");
+    return entries.items; // ← Returnerer array i stedet for [0]
   } catch (error) {
     console.error("❌ Feil i getByeTournamentInfoSection():", error);
-    return null;
+    return [];
   }
 }
 

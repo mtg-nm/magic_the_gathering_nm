@@ -16,10 +16,11 @@ export function Header({ navigation, normalizedSlug }: HeaderProps) {
               alt="NM Magic 2026 Logo" 
               className="logo-small"
             />
-            <div className="header-title" style={{ marginLeft: '15px' }}>
-              <h1>NM Magic 2026</h1>
-              <p>Norgesmesterskapet i Magic: The Gathering</p>
-            </div>
+<div className="header-title" style={{ marginLeft: '15px' }}>
+                  <h1>NM Magic 2026</h1>
+                  <p>7-9 August</p>
+                  <p><strong>Norgesmesterskapet i Magic: The Gathering</strong></p>
+                </div>
           </div>
           <nav className="nav-menu">
             {Array.isArray(navigation) &&
